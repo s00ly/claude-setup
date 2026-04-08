@@ -1,0 +1,43 @@
+# Claude Code Plugin Manifest — s00ly
+# Single source of truth. One plugin per line.
+# Lines starting with # are comments. Blank lines ignored.
+# Prefix with ! to install but DISABLE.
+#
+# Sync command: bash sync-plugins.sh
+# Updated: 2026-04-08
+
+# -- Dev workflow --
+superpowers
+feature-dev
+commit-commands
+pr-review-toolkit
+hookify
+ralph-loop
+skill-creator
+code-simplifier
+
+# -- Code intelligence --
+typescript-lsp
+security-guidance
+context7
+
+# -- Platform --
+vercel
+firebase
+github
+sentry
+
+# -- Output & config --
+explanatory-output-style
+claude-code-setup
+claude-md-management
+
+# -- Tools --
+firecrawl
+playground
+playwright
+frontend-design
+agent-sdk-dev
+
+# -- Disabled (install but off) --
+!stripe
