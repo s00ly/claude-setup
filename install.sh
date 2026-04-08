@@ -55,5 +55,11 @@ fi
 echo ""
 echo "  Installed ${#installed[@]} command(s): ${installed[*]}"
 echo ""
+
+# Sync plugins
+if [ -f "$SCRIPT_DIR/sync-plugins.sh" ]; then
+  bash "$SCRIPT_DIR/sync-plugins.sh"
+fi
+
 echo "  Open Claude Code and type any command to start."
 echo ""
