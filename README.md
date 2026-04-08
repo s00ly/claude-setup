@@ -1,67 +1,82 @@
 # Claude Code — Project Setup
 
-Global slash commands for cross-device project resumption with Claude Code.
+Global slash commands and plugin management for cross-device development.
 
-## Quick Start (any new device)
+## Bootstrap (new device — one command)
 
-### 1. Install Claude Code
-
-From your Anthropic subscription — follow the official install instructions.
-
-### 2. Bootstrap (paste this into Claude Code)
-
-```
-Clone https://github.com/s00ly/claude-setup to ~/code/claude-setup and run the install script.
-```
-
-That's it. Claude detects your OS and runs the correct installer.
-
-### 3. Use
-
-| Command | Project |
-|---------|---------|
-| `/hr`   | RIA HR Portal — biometric attendance + HR management |
-| `/neo`  | NeoWealth — Bitcoin education platform |
-
-Each command auto-clones the project repo if it's not on your machine yet.
-
-## Manual Install (if you prefer)
-
-**Linux / macOS / Git Bash:**
 ```bash
-git clone https://github.com/s00ly/claude-setup.git ~/code/claude-setup
-~/code/claude-setup/install.sh
+git clone https://github.com/s00ly/claude-setup.git /tmp/claude-setup && bash /tmp/claude-setup/install.sh && bash /tmp/claude-setup/sync-plugins.sh
 ```
 
-**Windows PowerShell:**
-```powershell
-git clone https://github.com/s00ly/claude-setup.git $HOME\code\claude-setup
-& "$HOME\code\claude-setup\install.ps1"
+Installs all commands and syncs all plugins. After this, everything works.
+
+## Commands
+
+| Command | What it does |
+|---------|-------------|
+| `/pl`   | Resume Intropa P&L V03 |
+| `/hr`   | Resume RIA HR Portal |
+| `/neo`  | Resume NeoWealth |
+| `/sync` | Push session to Notion |
+| `/check-plugins` | Audit plugin compliance against manifest |
+
+## Plugin Management
+
+Plugins are managed declaratively via `plugins.txt` (single source of truth).
+
+```bash
+bash sync-plugins.sh          # full sync (install, remove, verify)
+bash sync-plugins.sh --check  # audit only, no changes
 ```
 
-## Adding a New Project
-
-1. Create `commands/<name>.md` in this repo
-2. Push
-3. Re-run `install.sh` (Linux) or `install.ps1` (Windows) on each device
+To add/remove a plugin: edit `plugins.txt`, commit, push. Other devices pull and re-sync.
 
 ## How It Works
 
 ```
 You type /hr
-    │
-    ▼
-~/.claude/commands/hr.md  ◄── installed by this repo (global routing)
-    │
-    ├─ Repo missing? → auto-clone from GitHub
-    ├─ cd into project
-    ├─ Read CLAUDE.md (rules) + HANDOFF.md (state)
-    │
-    ▼
-.claude/commands/resume-hr.md  ◄── lives in the project repo (travels with git)
-    │
-    ├─ Git sync (fetch, fast-forward, detect divergence)
-    ├─ Fetch state (HANDOFF.md, Notion, git log, health checks)
-    ├─ Report status
-    └─ Ask before executing work
+    |
+    v
+~/.claude/commands/hr.md  <-- installed by this repo (global routing)
+    |
+    +- Repo missing? -> auto-clone from GitHub
+    +- cd into project
+    +- Read CLAUDE.md (rules) + HANDOFF.md (state)
+    |
+    v
+.claude/commands/resume-hr.md  <-- lives in the project repo (travels with git)
+    |
+    +- Git sync (fetch, fast-forward, detect divergence)
+    +- Fetch state (HANDOFF.md, Notion, git log, health checks)
+    +- Report status
+    +- Ask before executing work
 ```
+
+## File Layout
+
+```
+claude-setup/
+  commands/          # slash command definitions
+    pl.md
+    hr.md
+    neo.md
+    sync.md
+    check-plugins.md
+  plugins.txt        # declarative plugin manifest
+  settings.json      # non-plugin settings (synced across devices)
+  install.sh         # install commands to ~/.claude/commands/
+  install.ps1        # Windows PowerShell installer
+  sync-plugins.sh    # plugin sync (install/remove/verify)
+```
+
+## Adding a New Project
+
+1. Create `commands/<name>.md`
+2. Push
+3. Re-run `install.sh` on each device
+
+## Updating Plugins
+
+1. Edit `plugins.txt` (add/remove lines)
+2. Push
+3. Other devices: `git pull && bash sync-plugins.sh`
